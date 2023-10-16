@@ -2,16 +2,12 @@ import spacy
 import streamlit as st
 import re
 
-# Load a spaCy NER model
 nlp = spacy.load("en_core_web_sm")
 
-def recognize_phone_numbers(text):
-    # phone_number_pattern = r"(\+\d{1,2}\s?)?(\d{3}[-.\s]?\d{3}[-.\s]?\d{4}|\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\d{10})"
-     phone_number_pattern = r"(\+\d{1,2}\s?)?((\d{1,3}[-.\s]?)+\d{1,3}[-.\s]?\d{2,6})"
-    phone_numbers = []
-    for match in re.finditer(phone_number_pattern, text):
-        phone_numbers.append(match.group())
-    return phone_numbers
+def recognize_numbers(text):
+    phone_number_pattern = r"(\+\d{1,2}\s?)?(\d{1,3}[-.\s]?)+\d{1,3}[-.\s]?\d{2,6}"
+    formatted_text = re.sub(phone_number_pattern, "NUMBER", text)
+    return formatted_text
 
 def recognize_email_addresses(text):
     email_pattern = r"\b[\w\.-]+@[\w\.-]+\.\w+\b"
@@ -23,11 +19,9 @@ def recognize_email_addresses(text):
 def replace_entities(input_text):
     doc = nlp(input_text)
     
-    phone_numbers = recognize_phone_numbers(input_text)
     email_addresses = recognize_email_addresses(input_text)
     
     entity_mapping = {
-        "PHONE_NUMBER": "phone-number",
         "EMAIL": "email",
         "NAME": "person-name",
         "ORG": "company-name",
@@ -35,26 +29,16 @@ def replace_entities(input_text):
     }
     
     modified_text = []
-    current_entity = None
     
     for token in doc:
-        if token.text in phone_numbers:
-            modified_text.append(entity_mapping["PHONE_NUMBER"])
-            current_entity = "PHONE_NUMBER"
-        elif token.text in email_addresses:
+        if token.text in email_addresses:
             modified_text.append(entity_mapping["EMAIL"])
-            current_entity = "EMAIL"
-        elif token.ent_type_ in entity_mapping:
-            if current_entity == entity_mapping[token.ent_type_]:
-                continue
-            else:
-                modified_text.append(entity_mapping[token.ent_type_])
-                current_entity = entity_mapping[token.ent_type_]
         else:
             modified_text.append(token.text)
-            current_entity = None
     
-    return " ".join(modified_text)
+    modified_text = recognize_numbers(" ".join(modified_text))
+    
+    return modified_text
 
 st.title("Entity Recognition Demo")
 
