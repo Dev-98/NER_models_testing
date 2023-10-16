@@ -6,15 +6,13 @@ import re
 nlp = spacy.load("en_core_web_sm")
 
 def recognize_phone_numbers(text):
-    # Define a regular expression pattern to recognize phone numbers
-    phone_number_pattern = r"\b(?:\+\d{1,2}\s?)?(?:\d{3}[-.\s]?\d{3}[-.\s]?\d{4}|\(\d{3}\)\s?\d{3}[-.\s]?\d{4})\b"
+    phone_number_pattern = r"(\+\d{1,2}\s?)?(\d{3}[-.\s]?\d{3}[-.\s]?\d{4}|\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\d{10})"
     phone_numbers = []
     for match in re.finditer(phone_number_pattern, text):
         phone_numbers.append(match.group())
     return phone_numbers
 
 def recognize_email_addresses(text):
-    # Define a regular expression pattern to recognize email addresses
     email_pattern = r"\b[\w\.-]+@[\w\.-]+\.\w+\b"
     email_addresses = []
     for match in re.finditer(email_pattern, text):
