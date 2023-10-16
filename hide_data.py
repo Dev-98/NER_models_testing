@@ -6,7 +6,8 @@ import re
 nlp = spacy.load("en_core_web_sm")
 
 def recognize_phone_numbers(text):
-    phone_number_pattern = r"(\+\d{1,2}\s?)?(\d{3}[-.\s]?\d{3}[-.\s]?\d{4}|\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\d{10})"
+    # phone_number_pattern = r"(\+\d{1,2}\s?)?(\d{3}[-.\s]?\d{3}[-.\s]?\d{4}|\(\d{3}\)\s?\d{3}[-.\s]?\d{4}|\d{10})"
+     phone_number_pattern = r"(\+\d{1,2}\s?)?((\d{1,3}[-.\s]?)+\d{1,3}[-.\s]?\d{2,6})"
     phone_numbers = []
     for match in re.finditer(phone_number_pattern, text):
         phone_numbers.append(match.group())
