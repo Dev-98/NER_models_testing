@@ -22,26 +22,36 @@ def replace_entities(input_text):
     email_addresses = recognize_email_addresses(input_text)
     
     entity_mapping = {
-        "EMAIL": "email",
-        "NAME": "person-name",
-        "ORG": "company-name",
-        "GPE": "place",
+        "EMAIL": "MAIL",
+        "PERSON": "NAME",
+        "ORG": "ORGANIZATION",
+        "GPE": "PLACE",
     }
     
     modified_text = []
+    current_entity = None
+
     
     for token in doc:
         if token.text in email_addresses:
             modified_text.append(entity_mapping["EMAIL"])
+            current_entity = "EMAIL"
+
+        elif token.ent_type_ in entity_mapping:
+            if current_entity == entity_mapping[token.ent_type_]:
+                continue
+            else:
+                modified_text.append(entity_mapping[token.ent_type_])
+                current_entity = entity_mapping[token.ent_type_]
         else:
             modified_text.append(token.text)
+            current_entity = None
     
     modified_text = recognize_numbers(" ".join(modified_text))
     
     return modified_text
 
-st.title("Entity Recognition Demo")
-
+st.title("PDF-BOT")
 input_text = st.text_area("Enter the string you want to work with:")
 
 if st.button("Convert"):
