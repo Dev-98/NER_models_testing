@@ -2,6 +2,7 @@ import spacy
 import streamlit as st
 import re
 
+
 nlp = spacy.load("en_core_web_sm")
 
 def recognize_numbers(text):
