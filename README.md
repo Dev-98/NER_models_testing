@@ -1,5 +1,6 @@
-"# NER_models_testing" 
+# NER_models_testing
 
 Contributor - Dev , mayank
 
-Streamlit full fledged app for performing NER
+Streamlit app for performing NER
+: https://pdf-bot-5mmfszak8db6k83tbu7esy.streamlit.app/
